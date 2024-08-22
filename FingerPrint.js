@@ -70,5 +70,3 @@ function sendFingerprintToBackend(apiKey, fingerprint) {
     .then(data => console.log('Success:', data))
     .catch(error => console.error('Error:', error));
 }
-
-export default getBrowserFingerprint;
