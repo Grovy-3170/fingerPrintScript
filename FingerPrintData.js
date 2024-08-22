@@ -64,7 +64,7 @@ function sendFingerprintToBackend(apiKey, fingerprint) {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${apiKey}`
         },
-        body: JSON.stringify({ fingerprint: fingerprint })
+        body: JSON.stringify({ fingerprint: fingerprint, apiKey:apiKey })
     })
     .then(response => response.json())
     .then(data => console.log('Success:', data))
