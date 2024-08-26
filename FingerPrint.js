@@ -47,14 +47,33 @@ function getBrowserFingerprint(apiKey) {
     return fingerprint;
 }
 
+// function hashString(str) {
+//     let hash = 0, i, chr;
+//     for (i = 0; i < str.length; i++) {
+//         chr = str.charCodeAt(i);
+//         hash = ((hash << 5) - hash) + str.charCodeAt(i);
+//         hash |= 0; // Convert to 32bit integer
+//     }
+//     return hash;
+// }
+
 function hashString(str) {
-    let hash = 0, i, chr;
-    for (i = 0; i < str.length; i++) {
-        chr = str.charCodeAt(i);
-        hash = ((hash << 5) - hash) + str.charCodeAt(i);
-        hash |= 0; // Convert to 32bit integer
-    }
-    return hash;
+    // Generate SHA-256 hash of the input string
+    const hash = crypto.createHash('sha256').update(str).digest('hex');
+
+    // Convert the hash to a base62 alphanumeric string (0-9, a-z, A-Z)
+    const base62 = hash.split('').map(char => {
+        const code = char.charCodeAt(0);
+        if (code >= 48 && code <= 57) { // '0'-'9'
+            return char;
+        } else if (code >= 97 && code <= 102) { // 'a'-'f' (for hex chars)
+            return String.fromCharCode(97 + (code - 97) % 26); // Convert to 'a'-'z'
+        } else {
+            return String.fromCharCode(65 + (code - 65) % 26); // Convert to 'A'-'Z'
+        }
+    }).join('');
+
+    return base62;
 }
 
 function sendFingerprintToBackend(apiKey, fingerprint) {
