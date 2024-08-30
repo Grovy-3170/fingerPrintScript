@@ -111,4 +111,19 @@ async function sendFingerprintToBackend(apiKey, fingerprint) {
     });
 }
 
+const observeUrlChange = () => {
+    let oldHref = document.location.href;
+    const body = document.querySelector("body");
+    const observer = new MutationObserver(mutations => {
+      if (oldHref !== document.location.href) {
+        oldHref = document.location.href;
+        /* Changed ! your code here */
+        getBrowserFingerprint(oldHref);
+      }
+    });
+    observer.observe(body, { childList: true, subtree: true });
+  };
+  
+  window.onload = observeUrlChange;
+
 getBrowserFingerprint(window.location.href);
