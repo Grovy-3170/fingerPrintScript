@@ -1,4 +1,4 @@
-function getBrowserFingerprint(apiKey) {
+async function getBrowserFingerprint(apiKey) {
     const navigatorInfo = window.navigator;
     const screenInfo = window.screen;
     const timezone = new Date().getTimezoneOffset();
@@ -39,7 +39,7 @@ function getBrowserFingerprint(apiKey) {
     data.push(webglData);
 
     // Hash the data
-    const fingerprint = hashString(data.join(''));
+    const fingerprint = await hashString(data.join(''));
 
     // Send the fingerprint to the backend
     sendFingerprintToBackend(apiKey, fingerprint);
@@ -48,32 +48,39 @@ function getBrowserFingerprint(apiKey) {
 }
 
 // function hashString(str) {
-//     let hash = 0, i, chr;
+//     let hash = 0x0, i, chr;
 //     for (i = 0; i < str.length; i++) {
 //         chr = str.charCodeAt(i);
 //         hash = ((hash << 5) - hash) + str.charCodeAt(i);
 //         hash |= 0; // Convert to 32bit integer
 //     }
-//     return hash;
+//     return hash.toString();
 // }
 
-function hashString(str) {
-    // Generate SHA-256 hash of the input string
-    const hash = crypto.createHash('sha256').update(str).digest('hex');
+async function hashString(str) {
+    // Encode the input string as a Uint8Array
+    const buffer = new TextEncoder().encode(str);
 
-    // Convert the hash to a base62 alphanumeric string (0-9, a-z, A-Z)
-    const base62 = hash.split('').map(char => {
-        const code = char.charCodeAt(0);
-        if (code >= 48 && code <= 57) { // '0'-'9'
-            return char;
-        } else if (code >= 97 && code <= 102) { // 'a'-'f' (for hex chars)
-            return String.fromCharCode(97 + (code - 97) % 26); // Convert to 'a'-'z'
-        } else {
-            return String.fromCharCode(65 + (code - 65) % 26); // Convert to 'A'-'Z'
-        }
-    }).join('');
+    // Generate SHA-256 hash
+    return crypto.subtle.digest('SHA-256', buffer).then(hash => {
+        // Convert the hash to a hexadecimal string
+        const hashArray = Array.from(new Uint8Array(hash));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
-    return base62;
+        // Convert the hash to a base62 alphanumeric string (0-9, a-z, A-Z)
+        const base62 = hashHex.split('').map(char => {
+            const code = char.charCodeAt(0);
+            if (code >= 48 && code <= 57) { // '0'-'9'
+                return char;
+            } else if (code >= 97 && code <= 102) { // 'a'-'f'
+                return String.fromCharCode(97 + (code - 97) % 26); // Convert to 'a'-'z'
+            } else {
+                return String.fromCharCode(65 + (code - 65) % 26); // Convert to 'A'-'Z'
+            }
+        }).join('');
+
+        return base62;
+    });
 }
 
 const successCallback = (position) => {
@@ -83,24 +90,23 @@ const successCallback = (position) => {
 const errorCallback = (error) => {
     console.log(error);
 };
-  
 
 function sendFingerprintToBackend(apiKey, fingerprint) {
+
     let location = navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
     const d = new Date();
-let time = d.getTime();
-const detectDeviceType = () =>
-    /Mobile|Android|iPhone|iPad/i.test(navigator.userAgent)
-      ? 'Mobile'
-      : 'Desktop';
-  // 'Mobile' or 'Desktop'
+    let time = d.getTime();
+    const detectDeviceType = () => /Mobile|Android|iPhone|iPad/i.test(navigator.userAgent)
+    ? 'Mobile'
+    : 'Desktop';
+
     fetch('https://your-backend-endpoint.com/fingerprint', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${apiKey}`
         },
-        body: JSON.stringify({ fingerprint: fingerprint, apiKey:apiKey, time:d, device_type: detectDeviceType(), latlong:location })
+        body: JSON.stringify({ fingerprint: fingerprint, apiKey:apiKey, time:d, device_type: detectDeviceType(), latlong:location})
     })
     .then(response => response.json())
     .then(data => console.log('Success:', data))
