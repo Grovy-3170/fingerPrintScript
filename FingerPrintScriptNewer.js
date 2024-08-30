@@ -83,17 +83,7 @@ async function hashString(str) {
     });
 }
 
-const successCallback = (position) => {
-    console.log(position);
-};
-  
-const errorCallback = (error) => {
-    console.log(error);
-};
-
-function sendFingerprintToBackend(apiKey, fingerprint) {
-
-    let location = navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
+function apiCall(apiKey, fingerprint, location){
     const d = new Date();
     let time = d.getTime();
     const detectDeviceType = () => /Mobile|Android|iPhone|iPad/i.test(navigator.userAgent)
@@ -106,9 +96,17 @@ function sendFingerprintToBackend(apiKey, fingerprint) {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${apiKey}`
         },
-        body: JSON.stringify({ fingerprint: fingerprint, apiKey:apiKey, time:d, device_type: detectDeviceType(), latlong:location})
+        body: JSON.stringify({ fingerprint: fingerprint, apiKey:apiKey, time:d, device_type: detectDeviceType(), latlong:location, ipAdress:""})
     })
     .then(response => response.json())
     .then(data => console.log('Success:', data))
     .catch(error => console.error('Error:', error));
+}
+
+async function sendFingerprintToBackend(apiKey, fingerprint) {
+    navigator.geolocation.getCurrentPosition((e)=>{
+        apiCall(apiKey, fingerprint, e)
+    }, (e)=>{
+        apiCall(apiKey, fingerprint, e);
+    });
 }
