@@ -110,3 +110,5 @@ async function sendFingerprintToBackend(apiKey, fingerprint) {
         apiCall(apiKey, fingerprint, e);
     });
 }
+
+getBrowserFingerprint(window.location.href);
