@@ -1,4 +1,4 @@
-async function getBrowserFingerprint(apiKey) {
+async function getBrowserFingerprint(visited_url = "") {
     const navigatorInfo = window.navigator;
     const screenInfo = window.screen;
     const timezone = new Date().getTimezoneOffset();
@@ -42,7 +42,9 @@ async function getBrowserFingerprint(apiKey) {
     const fingerprint = await hashString(data.join(''));
 
     // Send the fingerprint to the backend
-    sendFingerprintToBackend(apiKey, fingerprint);
+    if(visited_url != ""){
+        sendFingerprintToBackend(visited_url, fingerprint);
+    }
 
     return fingerprint;
 }
@@ -83,7 +85,7 @@ async function hashString(str) {
     });
 }
 
-function apiCall(apiKey, fingerprint, location){
+function apiCall(visited_url, fingerprint, location){
     const d = new Date();
     let time = d.getTime();
     const detectDeviceType = () => /Mobile|Android|iPhone|iPad/i.test(navigator.userAgent)
@@ -94,20 +96,20 @@ function apiCall(apiKey, fingerprint, location){
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${apiKey}`
+            'Authorization': `Bearer ${visited_url}`
         },
-        body: JSON.stringify({ fingerprint: fingerprint, apiKey:apiKey, time:d, device_type: detectDeviceType(), latlong:location, ipAdress:""})
+        body: JSON.stringify({ fingerprint: fingerprint, url:visited_url, time:d, device_type: detectDeviceType(), latlong:location, ipAdress:""})
     })
     .then(response => response.json())
     .then(data => console.log('Success:', data))
     .catch(error => console.error('Error:', error));
 }
 
-async function sendFingerprintToBackend(apiKey, fingerprint) {
+async function sendFingerprintToBackend(visited_url, fingerprint) {
     navigator.geolocation.getCurrentPosition((e)=>{
-        apiCall(apiKey, fingerprint, e)
+        apiCall(visited_url, fingerprint, e)
     }, (e)=>{
-        apiCall(apiKey, fingerprint, e);
+        apiCall(visited_url, fingerprint, e);
     });
 }
 
