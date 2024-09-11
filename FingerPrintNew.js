@@ -1,4 +1,4 @@
-async function getBrowserFingerprint(visited_url = "") {
+async function getBrowserFingerprint(visited_url = "", events = []) {
     const navigatorInfo = window.navigator;
     const screenInfo = window.screen;
     const timezone = new Date().getTimezoneOffset();
@@ -43,7 +43,10 @@ async function getBrowserFingerprint(visited_url = "") {
 
     // Send the fingerprint to the backend
     if(visited_url != ""){
-        sendFingerprintToBackend(visited_url, fingerprint);
+        sendFingerprintToBackend(visited_url, fingerprint, ["go to url",visited_url]);
+    }
+    if(events.length !== 0){
+        sendFingerprintToBackend(document.location.href, fingerprint, events)
     }
 
     return fingerprint;
@@ -85,31 +88,42 @@ async function hashString(str) {
     });
 }
 
-function apiCall(visited_url, fingerprint, location){
-    const d = new Date();
-    let time = d.getTime();
+let hardCoded = {
+    company_url: 'facebook',
+    fingerprint: 'jsdfhgjedkretetetete0497',
+    device: 'Mac',
+    device_type: 'laptop',
+    ip_address: '162.87.225.123',
+    browser: 'chrome',
+    url: 'http://127.0.0.1:8000/fingerprint/', // url the user visited
+    latlong: 'latlong', // jsonfield
+    events: ['button clicked', 'clicked on something'], // jsonfield
+    api_key:"newcompany",
+  };
+
+function apiCall(visited_url, fingerprint,events, location){
     const detectDeviceType = () => /Mobile|Android|iPhone|iPad/i.test(navigator.userAgent)
     ? 'Mobile'
     : 'Desktop';
 
-    fetch('https://your-backend-endpoint.com/fingerprint', {
+    fetch('https://alphagenstaging.onrender.com/fingerprint/track-visit/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${visited_url}`
         },
-        body: JSON.stringify({ fingerprint: fingerprint, url:visited_url, time:d, device_type: detectDeviceType(), latlong:location, ipAdress:""})
+        body: JSON.stringify({...hardCoded, fingerprint: fingerprint, device:navigator.platform, url:visited_url, device_type: detectDeviceType(), latlong:location, events:events})
     })
     .then(response => response.json())
     .then(data => console.log('Success:', data))
     .catch(error => console.error('Error:', error));
 }
 
-async function sendFingerprintToBackend(visited_url, fingerprint) {
+async function sendFingerprintToBackend(visited_url, fingerprint, events) {
     navigator.geolocation.getCurrentPosition((e)=>{
-        apiCall(visited_url, fingerprint, e)
+        apiCall(visited_url, fingerprint,events, e)
     }, (e)=>{
-        apiCall(visited_url, fingerprint, e);
+        apiCall(visited_url, fingerprint,events, e);
     });
 }
 
@@ -127,5 +141,13 @@ const observeUrlChange = () => {
   };
   
   window.onload = observeUrlChange;
+
+  document.addEventListener('click',(e)=>{
+    if(e.target.tagName.toLowerCase() === "button"){
+        getBrowserFingerprint("",[e.type, e.target.innerHTML])
+    } else if(e.target.tagName.toLowerCase() === "input"){
+        getBrowserFingerprint("", [e.type, "Input field"])
+    }
+  })
 
 getBrowserFingerprint(window.location.href);
