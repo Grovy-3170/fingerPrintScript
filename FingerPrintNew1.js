@@ -143,6 +143,7 @@ const observeUrlChange = () => {
   window.onload = observeUrlChange;
 
   document.addEventListener('click',(e)=>{
+      console.log(e.target, e.type, e.target.innerHTML);
     if(e.target.tagName.toLowerCase() === "button"){
         getBrowserFingerprint("",[e.type, e.target.innerHTML])
     } else if(e.target.tagName.toLowerCase() === "input"){
