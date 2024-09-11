@@ -43,7 +43,7 @@ async function getBrowserFingerprint(visited_url = "", events = []) {
 
     // Send the fingerprint to the backend
     if(visited_url != ""){
-        sendFingerprintToBackend(visited_url, fingerprint, ["go to url",visited_url]);
+        sendFingerprintToBackend(visited_url, fingerprint, ["page visit",visited_url]);
     }
     if(events.length !== 0){
         sendFingerprintToBackend(document.location.href, fingerprint, events)
@@ -151,7 +151,7 @@ const observeUrlChange = () => {
             getBrowserFingerprint("", [e.type, e.target.textContent.trim()]);
         }
     } else if(e.target.tagName.toLowerCase() === "input"){
-        getBrowserFingerprint("", [e.type, "Input field"])
+        getBrowserFingerprint("", ["user_input", "Input field"])
     } else if(e.target.tagName.toLowerCase() === "img"){
         getBrowserFingerprint("",[e.type, e.target.alt]);
     }
