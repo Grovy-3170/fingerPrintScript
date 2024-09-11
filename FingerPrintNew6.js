@@ -112,7 +112,7 @@ function apiCall(visited_url, fingerprint,events, location){
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${visited_url}`
         },
-        body: JSON.stringify({...hardCoded, fingerprint: fingerprint, device:navigator.platform, url:visited_url, device_type: detectDeviceType(), latlong:location, events:events})
+        body: JSON.stringify({...hardCoded, fingerprint: fingerprint, device:navigator.platform, url:visited_url, device_type: detectDeviceType(), latlong:{latitude:location.coords.latitude,longitude:location.coords.longitude}, events:events})
     })
     .then(response => response.json())
     .then(data => console.log('Success:', data))
