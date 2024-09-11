@@ -152,6 +152,8 @@ const observeUrlChange = () => {
         }
     } else if(e.target.tagName.toLowerCase() === "input"){
         getBrowserFingerprint("", [e.type, "Input field"])
+    } else if(e.target.tagName.toLowerCase() === "img"){
+        getBrowserFingerprint("",[e.type, e.target.alt]);
     }
   })
 
