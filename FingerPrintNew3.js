@@ -143,9 +143,13 @@ const observeUrlChange = () => {
   window.onload = observeUrlChange;
 
   document.addEventListener('click',(e)=>{
-      console.log(e.target, e.type, e.target.textContent.trim());
+    console.log(e.target, e.type, e.target.textContent.trim());
     if(e.target.tagName.toLowerCase() === "button"){
-        getBrowserFingerprint("",[e.type, e.target.textContent.trim()])
+        if (e.target.children.length === 1 && e.target.children[0].tagName.toLowerCase() === 'img') {
+            getBrowserFingerprint("", [e.type, e.target.children[0].alt]);
+        } else {
+            getBrowserFingerprint("", [e.type, e.target.textContent.trim()]);
+        }
     } else if(e.target.tagName.toLowerCase() === "input"){
         getBrowserFingerprint("", [e.type, "Input field"])
     }
