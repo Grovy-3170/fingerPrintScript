@@ -151,7 +151,7 @@ const observeUrlChange = () => {
             getBrowserFingerprint("", [e.type, e.target.textContent.trim()]);
         }
     } else if(e.target.tagName.toLowerCase() === "input"){
-        getBrowserFingerprint("", ["user_input", e.target.type])
+        getBrowserFingerprint("", ["user_input", `Input field: ${e.target.type}`])
     } else if(e.target.tagName.toLowerCase() === "img"){
         getBrowserFingerprint("",[e.type, e.target.alt]);
     }
