@@ -89,7 +89,7 @@ async function hashString(str) {
 }
 
 let hardCoded = {
-    fingerprint: 'jsdfhgjedkretetetete0497',
+    analytics: '',
     device: 'Mac',
     device_type: 'laptop',
     ip_address: '162.87.225.123',
@@ -111,7 +111,7 @@ function apiCall(visited_url, fingerprint,events, location){
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${visited_url}`
         },
-        body: JSON.stringify({...hardCoded, fingerprint: fingerprint, device:navigator.platform, url:visited_url, device_type: detectDeviceType(), latlong:{latitude:location.coords.latitude,longitude:location.coords.longitude}, events:events})
+        body: JSON.stringify({...hardCoded, analytics: fingerprint, device:navigator.platform, url:visited_url, device_type: detectDeviceType(), latlong:{latitude:location.coords.latitude,longitude:location.coords.longitude}, events:events})
     })
     .then(response => response.json())
     .then(data => console.log('Success:', data))
