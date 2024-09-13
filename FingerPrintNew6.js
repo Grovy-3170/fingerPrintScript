@@ -1,4 +1,4 @@
-async function getBrowserFingerprint(visited_url = "", events = []) {
+async function useBrowserAnalytics(visited_url = "", events = []) {
     const navigatorInfo = window.navigator;
     const screenInfo = window.screen;
     const timezone = new Date().getTimezoneOffset();
@@ -133,7 +133,7 @@ const observeUrlChange = () => {
       if (oldHref !== document.location.href) {
         oldHref = document.location.href;
         /* Changed ! your code here */
-        getBrowserFingerprint(oldHref);
+        useBrowserAnalytics(oldHref);
       }
     });
     observer.observe(body, { childList: true, subtree: true });
@@ -145,15 +145,15 @@ const observeUrlChange = () => {
    // console.log(e.target, e.type, e.target.textContent.trim());
     if(e.target.tagName.toLowerCase() === "button" || e.target.tagName.toLowerCase() === "a"){
         if (e.target.children.length === 1 && e.target.children[0].tagName.toLowerCase() === 'img') {
-            getBrowserFingerprint("", [e.type, e.target.children[0].alt]);
+            useBrowserAnalytics("", [e.type, e.target.children[0].alt]);
         } else {
-            getBrowserFingerprint("", [e.type, e.target.textContent.trim()]);
+            useBrowserAnalytics("", [e.type, e.target.textContent.trim()]);
         }
     } else if(e.target.tagName.toLowerCase() === "input"){
-        getBrowserFingerprint("", ["user_input", `Input field: ${e.target.type}`])
+        useBrowserAnalytics("", ["user_input", `Input field: ${e.target.type}`])
     } else if(e.target.tagName.toLowerCase() === "img"){
-        getBrowserFingerprint("",[e.type, e.target.alt]);
+        useBrowserAnalytics("",[e.type, e.target.alt]);
     }
   })
 
-getBrowserFingerprint(window.location.href);
+useBrowserAnalytics(window.location.href);
