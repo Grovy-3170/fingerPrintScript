@@ -92,7 +92,7 @@ let hardCoded = {
     analytics: '',
     device: 'Mac',
     device_type: 'laptop',
-    ip_address: '162.87.225.123',
+    ip_address: '',
     browser: 'chrome',
     url: 'http://127.0.0.1:8000/fingerprint/', // url the user visited
     latlong: 'latlong', // jsonfield
