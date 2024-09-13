@@ -89,7 +89,6 @@ async function hashString(str) {
 }
 
 let hardCoded = {
-    company_url: 'facebook',
     fingerprint: 'jsdfhgjedkretetetete0497',
     device: 'Mac',
     device_type: 'laptop',
