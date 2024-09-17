@@ -92,6 +92,7 @@ let hardCoded = {
     analytics: '',
     device: 'Mac',
     device_type: 'laptop',
+    ip_address: '',
     browser: 'chrome',
     url: 'http://127.0.0.1:8000/fingerprint/', // url the user visited
     latlong: 'latlong', // jsonfield
@@ -110,7 +111,7 @@ function apiCall(visited_url, fingerprint,events, location){
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${visited_url}`
         },
-        body: JSON.stringify({...hardCoded, analytics: fingerprint, device:navigator.platform, url:visited_url, device_type: detectDeviceType(), latlong:{latitude:location.coords.latitude,longitude:location.coords.longitude}, events:events})
+        body: JSON.stringify({...hardCoded, analytics: fingerprint, device:navigator.platform, url:visited_url, device_type: detectDeviceType(), latlong:(location && location.coords)?{latitude:location.coords.latitude,longitude:location.coords.longitude}:{latitude:0, longitude:0}, events:events})
     })
     .then(response => response.json())
     .then(data => console.log('Success:', data))
@@ -118,11 +119,28 @@ function apiCall(visited_url, fingerprint,events, location){
 }
 
 async function sendFingerprintToBackend(visited_url, fingerprint, events) {
-    navigator.geolocation.getCurrentPosition((e)=>{
-        apiCall(visited_url, fingerprint,events, e)
-    }, (e)=>{
-        apiCall(visited_url, fingerprint,events, e);
-    });
+    navigator.permissions && navigator.permissions.query({name: 'geolocation'})
+    .then(function(PermissionStatus) {
+        if (PermissionStatus.state == 'granted') {
+              //allowed
+              if ('geolocation' in navigator) {
+                navigator.geolocation.getCurrentPosition((e)=>{
+                    apiCall(visited_url, fingerprint,events, e)
+                }, (e)=>{
+                    apiCall(visited_url, fingerprint,events, null);
+                });
+            } else{
+                apiCall(visited_url, fingerprint,events, null);
+            }
+        } else if (PermissionStatus.state == 'prompt') {
+              // prompt - not yet grated or denied
+              apiCall(visited_url, fingerprint,events, null);
+        } else {
+             //denied
+             apiCall(visited_url, fingerprint,events, null);
+        }
+    })
+    
 }
 
 const observeUrlChange = () => {
