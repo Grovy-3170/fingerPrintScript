@@ -109,7 +109,7 @@ function checkIncognito(){
       fs(window.TEMPORARY,
          100,
          ans = "not in incognito mode",
-         ans = "incognito mode";
+         ans = "incognito mode")
     }
     return ans;
 }
