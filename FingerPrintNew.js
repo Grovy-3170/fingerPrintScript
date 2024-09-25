@@ -109,7 +109,7 @@ function apiCall(visited_url, fingerprint,events, location){
 
     // Check if the API key is available in the GTM data layer
     if (typeof dataLayer !== 'undefined' && dataLayer.length > 0) {
-      const apiKeyDataLayerEntry = dataLayer.find(entry => entry.hasOwnProperty('yourVariableName'));
+      const apiKeyDataLayerEntry = dataLayer.find(entry => entry.hasOwnProperty('analytics_api_key'));
       if (apiKeyDataLayerEntry) {
         apiKey = apiKeyDataLayerEntry.yourVariableName;
       }
