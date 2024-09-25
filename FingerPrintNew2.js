@@ -111,7 +111,7 @@ function apiCall(visited_url, fingerprint,events, location){
     if (typeof dataLayer !== 'undefined' && dataLayer.length > 0) {
       const apiKeyDataLayerEntry = dataLayer.find(entry => entry.hasOwnProperty('analytics_api_key'));
       if (apiKeyDataLayerEntry) {
-        apiKey = apiKeyDataLayerEntry.yourVariableName;
+        apiKey = apiKeyDataLayerEntry.analytics_api_key;
       }
     }
 
