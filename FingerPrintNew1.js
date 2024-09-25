@@ -97,7 +97,7 @@ let hardCoded = {
     url: 'http://127.0.0.1:8000/fingerprint/', // url the user visited
     latlong: 'latlong', // jsonfield
     events: ['button clicked', 'clicked on something'], // jsonfield
-    api_key:document.getElementById('analytics')?.dataset.apiKey || '',
+    api_key:null,
   };
 
 function checkIncognito(){
@@ -131,6 +131,18 @@ function apiCall(visited_url, fingerprint,events, location){
     ? 'Mobile'
     : 'Desktop';
 
+    let apiKey;
+    // Check if the API key is available in the GTM data layer
+    if (typeof dataLayer !== 'undefined' && dataLayer.length > 0) {
+      const apiKeyDataLayerEntry = dataLayer.find(entry => entry.hasOwnProperty('yourVariableName'));
+      if (apiKeyDataLayerEntry) {
+        apiKey = apiKeyDataLayerEntry.yourVariableName;
+      }
+    }
+    // If not found in GTM, fallback to extracting from the DOM script tag
+    if (!apiKey) {
+      apiKey = document.getElementById('analytics')?.dataset.apiKey || '';
+    }
     fetch('https://alphagenstaging.onrender.com/fingerprint/track-visit/', {
         method: 'POST',
         headers: {
@@ -139,6 +151,7 @@ function apiCall(visited_url, fingerprint,events, location){
         },
         body: JSON.stringify({...hardCoded, analytics: fingerprint,
             // device:navigator.platform,
+            api_key:apiKey,
             device:getOperatingSystem(),
             incognito:checkIncognito(),
             url:visited_url, device_type: detectDeviceType(), latlong:(location && location.coords)?{latitude:location.coords.latitude,longitude:location.coords.longitude}:{latitude:0, longitude:0}, events:events})
