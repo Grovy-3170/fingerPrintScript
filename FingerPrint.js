@@ -100,38 +100,13 @@ let hardCoded = {
     api_key:null,
   };
 
-function checkIncognito(){
-    var fs = window.RequestFileSystem || window.webkitRequestFileSystem;
-    let ans = "check failed";
-    if (!fs) {
-      ans = "check failed?";
-    } else {
-      fs(window.TEMPORARY,
-         100,
-         ans = "not in incognito mode",
-         ans = "incognito mode")
-    }
-    return ans;
-}
-
-function getOperatingSystem(){
-    if (window.navigator.userAgent.indexOf("Windows") != -1) {
-        return "Windows";
-    } else if (window.navigator.userAgent.indexOf("Mac OS") != -1) {
-        return "Mac OS";
-    } else if (window.navigator.userAgent.indexOf("Linux") != -1) {
-        return "Linux";
-    } else {
-        return "couldn't be determined";
-    }
-}
-
 function apiCall(visited_url, fingerprint,events, location){
     const detectDeviceType = () => /Mobile|Android|iPhone|iPad/i.test(navigator.userAgent)
     ? 'Mobile'
     : 'Desktop';
 
     let apiKey;
+
     // Check if the API key is available in the GTM data layer
     if (typeof dataLayer !== 'undefined' && dataLayer.length > 0) {
       const apiKeyDataLayerEntry = dataLayer.find(entry => entry.hasOwnProperty('yourVariableName'));
@@ -139,22 +114,20 @@ function apiCall(visited_url, fingerprint,events, location){
         apiKey = apiKeyDataLayerEntry.yourVariableName;
       }
     }
+
     // If not found in GTM, fallback to extracting from the DOM script tag
     if (!apiKey) {
       apiKey = document.getElementById('analytics')?.dataset.apiKey || '';
     }
+
+    
     fetch('https://alphagenstaging.onrender.com/fingerprint/track-visit/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${visited_url}`
         },
-        body: JSON.stringify({...hardCoded, analytics: fingerprint,
-            // device:navigator.platform,
-            api_key:apiKey,
-            device:getOperatingSystem(),
-            incognito:checkIncognito(),
-            url:visited_url, device_type: detectDeviceType(), latlong:(location && location.coords)?{latitude:location.coords.latitude,longitude:location.coords.longitude}:{latitude:0, longitude:0}, events:events})
+        body: JSON.stringify({...hardCoded, analytics: fingerprint, api_key:apiKey, device:navigator.platform, url:visited_url, device_type: detectDeviceType(), latlong:(location && location.coords)?{latitude:location.coords.latitude,longitude:location.coords.longitude}:{latitude:0, longitude:0}, events:events})
     })
     .then(response => response.json())
     .then(data => console.log('Success:', data))
