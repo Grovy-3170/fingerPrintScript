@@ -101,17 +101,21 @@ let hardCoded = {
   };
 
 function getParameterByName(name, url) {
-  if (!url) {
-    url = window.location.href;
-  }
-  name = name.replace(/\[\]$/, '').replace(/^\?/, '');
-  var params = url.split('?')[1].split('&');
-  for (var i = 0; i < params.length; i++) {
-    var param = params[i].split('=');
-    if (param[0] === name) {
-      return param[1];
+    try{
+      if (!url) {
+        url = window.location.href;
+      }
+      name = name.replace(/\[\]$/, '').replace(/^\?/, '');
+      var params = url.split('?')[1].split('&');
+      for (var i = 0; i < params.length; i++) {
+        var param = params[i].split('=');
+        if (param[0] === name) {
+          return param[1];
+        }
+      }
+    } catch(error){
+        console.log("error in the analytics script", error);
     }
-  }
   return null;
 }
 
@@ -120,8 +124,6 @@ function apiCall(visited_url, fingerprint,events, location){
     ? 'Mobile'
     : 'Desktop';
 
-    // let apiKey;
-
     // Check if the API key is available in the GTM data layer
     // if (typeof dataLayer !== 'undefined' && dataLayer.length > 0) {
     //   const apiKeyDataLayerEntry = dataLayer.find(entry => entry.hasOwnProperty('analytics_api_key'));
@@ -129,17 +131,10 @@ function apiCall(visited_url, fingerprint,events, location){
     //     apiKey = apiKeyDataLayerEntry.analytics_api_key;
     //   }
     // }
-    // apiKey = document.getElementById('analytics')?.dataset.dataTrackApiKey;
-
-    // console.log("debug fingerprint",document.getElementById('analytics'), document.getElementById('analytics')?.dataset);
-
-    // If not found in GTM, fallback to extracting from the DOM script tag
-    // if (!apiKey) {
-    //   apiKey = document.getElementById('analytics')?.dataset.apiKey;
-    // }
-
-    // apiKey = getParameterByName('apiKey');
-
+    let apiKey = window?.alphaTrackApiKey;
+    if (!apiKey) {
+      apiKey = document.getElementById('analytics')?.dataset.alphaTrackApiKey;
+    }
     
     fetch('https://alphagenstaging.onrender.com/fingerprint/track-visit/', {
         method: 'POST',
