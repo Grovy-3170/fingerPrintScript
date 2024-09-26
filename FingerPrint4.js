@@ -100,6 +100,21 @@ let hardCoded = {
     api_key:null,
   };
 
+function getParameterByName(name, url) {
+  if (!url) {
+    url = window.location.href;
+  }
+  name = name.replace(/\[\]$/, '').replace(/^\?/, '');
+  var params = url.split('?')[1].split('&');
+  for (var i = 0; i < params.length; i++) {
+    var param = params[i].split('=');
+    if (param[0] === name) {
+      return param[1];
+    }
+  }
+  return null;
+}
+
 function apiCall(visited_url, fingerprint,events, location){
     const detectDeviceType = () => /Mobile|Android|iPhone|iPad/i.test(navigator.userAgent)
     ? 'Mobile'
@@ -119,9 +134,11 @@ function apiCall(visited_url, fingerprint,events, location){
     console.log("debug fingerprint",document.getElementById('analytics'), document.getElementById('analytics')?.dataset);
 
     // If not found in GTM, fallback to extracting from the DOM script tag
-    if (!apiKey) {
-      apiKey = document.getElementById('analytics')?.dataset.apiKey || '';
-    }
+    // if (!apiKey) {
+    //   apiKey = document.getElementById('analytics')?.dataset.apiKey;
+    // }
+
+    apiKey = getParameterByName('apiKey');
 
     
     fetch('https://alphagenstaging.onrender.com/fingerprint/track-visit/', {
