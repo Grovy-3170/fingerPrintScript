@@ -114,11 +114,11 @@ function apiCall(visited_url, fingerprint,events, location){
     //     apiKey = apiKeyDataLayerEntry.analytics_api_key;
     //   }
     // }
-    apiKey = document.getElementById('analytics')?.dataset.dataTrackApiKey;
+    apiKey = document.getElementById('analytics')?.dataset["data-track-api-key"];
 
     // If not found in GTM, fallback to extracting from the DOM script tag
     if (!apiKey) {
-      apiKey = document.getElementById('analytics')?.dataset.apiKey || '';
+      apiKey = document.getElementById('analytics')?.dataset["api-key"] || '';
     }
 
     
