@@ -145,7 +145,6 @@ function apiCall(visited_url, fingerprint,events, location){
         body: JSON.stringify({...hardCoded, analytics: fingerprint, api_key:apiKey, device:navigator.platform, url:visited_url, device_type: detectDeviceType(), latlong:(location && location.coords)?{latitude:location.coords.latitude,longitude:location.coords.longitude}:{latitude:0, longitude:0}, events:events})
     })
     .then(response => response.json())
-    .then(data => console.log('Success:', data))
     .catch(error => console.error('Error:', error));
 }
 
