@@ -108,12 +108,13 @@ function apiCall(visited_url, fingerprint,events, location){
     let apiKey;
 
     // Check if the API key is available in the GTM data layer
-    if (typeof dataLayer !== 'undefined' && dataLayer.length > 0) {
-      const apiKeyDataLayerEntry = dataLayer.find(entry => entry.hasOwnProperty('analytics_api_key'));
-      if (apiKeyDataLayerEntry) {
-        apiKey = apiKeyDataLayerEntry.analytics_api_key;
-      }
-    }
+    // if (typeof dataLayer !== 'undefined' && dataLayer.length > 0) {
+    //   const apiKeyDataLayerEntry = dataLayer.find(entry => entry.hasOwnProperty('analytics_api_key'));
+    //   if (apiKeyDataLayerEntry) {
+    //     apiKey = apiKeyDataLayerEntry.analytics_api_key;
+    //   }
+    // }
+    apiKey = document.getElementById('analytics')?.dataset.dataTrackApiKey;
 
     // If not found in GTM, fallback to extracting from the DOM script tag
     if (!apiKey) {
