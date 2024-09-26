@@ -116,6 +116,8 @@ function apiCall(visited_url, fingerprint,events, location){
     // }
     apiKey = document.getElementById('analytics')?.dataset.dataTrackApiKey;
 
+    console.log("debug fingerprint",document.getElementById('analytics'), document.getElementById('analytics')?.dataset);
+
     // If not found in GTM, fallback to extracting from the DOM script tag
     if (!apiKey) {
       apiKey = document.getElementById('analytics')?.dataset.apiKey || '';
