@@ -120,7 +120,7 @@ function apiCall(visited_url, fingerprint,events, location){
     ? 'Mobile'
     : 'Desktop';
 
-    let apiKey;
+    // let apiKey;
 
     // Check if the API key is available in the GTM data layer
     // if (typeof dataLayer !== 'undefined' && dataLayer.length > 0) {
@@ -129,16 +129,16 @@ function apiCall(visited_url, fingerprint,events, location){
     //     apiKey = apiKeyDataLayerEntry.analytics_api_key;
     //   }
     // }
-    apiKey = document.getElementById('analytics')?.dataset.dataTrackApiKey;
+    // apiKey = document.getElementById('analytics')?.dataset.dataTrackApiKey;
 
-    console.log("debug fingerprint",document.getElementById('analytics'), document.getElementById('analytics')?.dataset);
+    // console.log("debug fingerprint",document.getElementById('analytics'), document.getElementById('analytics')?.dataset);
 
     // If not found in GTM, fallback to extracting from the DOM script tag
     // if (!apiKey) {
     //   apiKey = document.getElementById('analytics')?.dataset.apiKey;
     // }
 
-    apiKey = getParameterByName('apiKey');
+    // apiKey = getParameterByName('apiKey');
 
     
     fetch('https://alphagenstaging.onrender.com/fingerprint/track-visit/', {
