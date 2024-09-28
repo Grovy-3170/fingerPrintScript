@@ -154,7 +154,6 @@ function apiCall(visited_url, fingerprint,events, location){
                               doNotTrack : navigator?.doNotTrack || window?.doNotTrack || navigator?.msDoNotTrack || "",
                               contentLanguage : navigator?.languages || [navigator?.language] || "",
                               clipBoardAcess:navigator?.permissions?.query({ name: 'clipboard-read' })?.state || "",
-                              gpuInfo : webgl?.getParameter(webgl.RENDERER) || "",
                               vibrationSupport : 'vibrate' in navigator || "",
                               bluetoothSupport : navigator?.bluetooth ? true : false,
                               serviceWorkerSupport : 'serviceWorker' in navigator,
