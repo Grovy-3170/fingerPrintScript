@@ -147,7 +147,7 @@ function apiCall(visited_url, fingerprint,events, location){
                               batter:navigator.getBattery().level,
                               orientation:orientation = screen.orientation.type,
                               connectionType : navigator.connection.effectiveType || navigator.mozConnection.effectiveType || navigator.webkitConnection.effectiveType || 'unknown',
-                              downlink :navigator.connection.downlink  || navigator.mozConnection.downlink  || navigator.webkitConnection.downlink  || 'unknown,
+                              downlink :navigator.connection.downlink  || navigator.mozConnection.downlink  || navigator.webkitConnection.downlink  || 'unknown',
                              })
     })
     .then(response => response.json())
