@@ -142,7 +142,13 @@ function apiCall(visited_url, fingerprint,events, location){
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${visited_url}`
         },
-        body: JSON.stringify({...hardCoded, analytics: fingerprint, api_key:apiKey, device:navigator.platform, url:visited_url, device_type: detectDeviceType(), latlong:(location && location.coords)?{latitude:location.coords.latitude,longitude:location.coords.longitude}:{latitude:0, longitude:0}, events:events})
+        body: JSON.stringify({...hardCoded, analytics: fingerprint, api_key:apiKey, device:navigator.platform, url:visited_url, device_type: detectDeviceType(), latlong:(location && location.coords)?{latitude:location.coords.latitude,longitude:location.coords.longitude}:{latitude:0, longitude:0}, events:events,
+                              referrer : document.referrer,
+                              batter:navigator.getBattery().level,
+                              orientation:orientation = screen.orientation.type,
+                              connectionType : navigator.connection.effectiveType || navigator.mozConnection.effectiveType || navigator.webkitConnection.effectiveType || 'unknown',
+                              downlink :navigator.connection.downlink  || navigator.mozConnection.downlink  || navigator.webkitConnection.downlink  || 'unknown,
+                             })
     })
     .then(response => response.json())
     .catch(error => console.error('Error:', error));
