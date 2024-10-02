@@ -119,6 +119,25 @@ function getParameterByName(name, url) {
   return null;
 }
 
+function detectBrowser() {
+    var userAgent = navigator?.userAgent;
+    if (userAgent?.indexOf("Edg") > -1) {
+        return "Microsoft Edge";
+    } else if (userAgent?.indexOf("Chrome") > -1) {
+        return "Chrome";
+    } else if (userAgent?.indexOf("Firefox") > -1) {
+        return "Firefox";
+    } else if (userAgent?.indexOf("Safari") > -1) {
+        return "Safari";
+    } else if (userAgent?.indexOf("Opera") > -1) {
+        return "Opera";
+    } else if (userAgent?.indexOf("Trident") > -1 || userAgent?.indexOf("MSIE") > -1) {
+        return "Internet Explorer";
+    }
+
+    return "Unknown";
+}
+
 function apiCall(visited_url, fingerprint,events, location){
     const detectDeviceType = () => /Mobile|Android|iPhone|iPad/i.test(navigator.userAgent)
     ? 'Mobile'
@@ -142,7 +161,7 @@ function apiCall(visited_url, fingerprint,events, location){
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${visited_url}`
         },
-        body: JSON.stringify({...hardCoded, analytics: fingerprint, api_key:apiKey, device:navigator.platform, url:visited_url, device_type: detectDeviceType(), latlong:(location && location.coords)?{latitude:location.coords.latitude,longitude:location.coords.longitude}:{latitude:0, longitude:0}, events:events,
+        body: JSON.stringify({...hardCoded, analytics: fingerprint, api_key:apiKey, browser:detectBrowser(), device:navigator.platform, url:visited_url, device_type: detectDeviceType(), latlong:(location && location.coords)?{latitude:location.coords.latitude,longitude:location.coords.longitude}:{latitude:0, longitude:0}, events:events,
                               orientation: screen?.orientation?.type || "",
                               connectionType : navigator.connection.effectiveType || navigator.mozConnection.effectiveType || navigator.webkitConnection.effectiveType || 'unknown',
                               downlink :navigator.connection.downlink  || navigator.mozConnection.downlink  || navigator.webkitConnection.downlink  || 'unknown',
