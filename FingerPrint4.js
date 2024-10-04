@@ -161,7 +161,7 @@ function apiCall(visited_url, fingerprint,events, location){
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${visited_url}`
         },
-        body: JSON.stringify({...hardCoded, analytics: fingerprint, api_key:apiKey, browser:detectBrowser(), device:navigator.platform, url:visited_url, device_type: detectDeviceType(), latlong:(location && location.coords)?{latitude:location.coords.latitude,longitude:location.coords.longitude}:{latitude:0, longitude:0}, events:events,
+        body: JSON.stringify({...hardCoded, analytics: fingerprint, api_key:apiKey, browser:detectBrowser(), device:navigator?.platform, url:visited_url, device_type: detectDeviceType(), latlong:(location && location.coords)?{latitude:location.coords.latitude,longitude:location.coords.longitude}:{latitude:0, longitude:0}, events:events,
                               orientation: screen?.orientation?.type || "unknown",
                               connectionType : navigator?.connection?.effectiveType || navigator?.mozConnection?.effectiveType || navigator?.webkitConnection?.effectiveType || null,
                               downlink :navigator?.connection?.downlink  || navigator?.mozConnection?.downlink  || navigator?.webkitConnection?.downlink  || null,
@@ -178,7 +178,7 @@ function apiCall(visited_url, fingerprint,events, location){
 }
 
 async function sendFingerprintToBackend(visited_url, fingerprint, events) {
-    navigator.permissions && navigator.permissions.query({name: 'geolocation'})
+    navigator?.permissions && navigator?.permissions?.query({name: 'geolocation'})
     .then(function(PermissionStatus) {
         if (PermissionStatus.state == 'granted') {
               //allowed
@@ -198,7 +198,9 @@ async function sendFingerprintToBackend(visited_url, fingerprint, events) {
              //denied
              apiCall(visited_url, fingerprint,events, null);
         }
-    })
+    }).catch(error){
+        apiCall(visited_url, fingerprint,events, null);
+    }
     
 }
 
