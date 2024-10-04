@@ -198,9 +198,9 @@ async function sendFingerprintToBackend(visited_url, fingerprint, events) {
              //denied
              apiCall(visited_url, fingerprint,events, null);
         }
-    }).catch(error){
-        apiCall(visited_url, fingerprint,events, null);
-    }
+    }).catch(error => {
+    apiCall(visited_url, fingerprint,events, null);
+  })
     
 }
 
