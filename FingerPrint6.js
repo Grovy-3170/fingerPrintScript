@@ -155,7 +155,7 @@ function apiCall(visited_url, fingerprint,events, location){
       apiKey = document.getElementById('analytics')?.dataset.alphaTrackApiKey;
     }
     
-    fetch('https://alphagenstaging.onrender.com/fingerprint/track-visit/', {
+    fetch('https://your-backend-url/track-visit/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
